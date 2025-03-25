@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="SonarQube - APIs_Leads HCE C# Quality Profile" ToolsVersion="16.0">
+  <Include Path="..\.sonarlint\apis_leadscsharp.ruleset" Action="Default" />
+</RuleSet>

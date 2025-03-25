@@ -1,0 +1,41 @@
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+ 
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+ 
+
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
+WORKDIR /src
+COPY . .
+RUN ls
+COPY ["api-leads.csproj", "api-leads/"]
+RUN dotnet restore "api-leads/api-leads.csproj"  --verbosity diag
+
+ 
+
+# show files
+RUN ls
+
+ 
+
+WORKDIR "/src/api-leads"
+COPY . ./
+# build app from restore
+RUN dotnet build "api-leads.csproj" -c Release  -o /app 
+
+ 
+
+FROM build AS publish
+RUN dotnet publish "api-leads.csproj" -c Release  -o /app 
+
+ 
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app .
+ENTRYPOINT ["dotnet", "api-leads.dll"]
